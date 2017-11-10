@@ -1,4 +1,5 @@
 package com.example.demo.mail;
+
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -19,64 +20,50 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SendSimpleMail {
-	
-	@RequestMapping(value="/send" , method= RequestMethod.GET)
+
+	@RequestMapping(value = "/send", method = RequestMethod.GET)
 	public String sendTemplateEmail() {
 
-        Properties props = new Properties();  
-        props.put("mail.smtp.host", "smtp.gmail.com");  
-        props.put("mail.smtp.auth", "true");  
-        props.put("mail.debug", "true");  
-        props.put("mail.smtp.port", 465);  
-        props.put("mail.smtp.socketFactory.port", 465);  
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.ssl.trust", "*");
-        props.put("mail.transport.protocol", "smtp");
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.debug", "true");
+		props.put("mail.smtp.port", 465);
+		props.put("mail.smtp.socketFactory.port", 465);
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.ssl.trust", "*");
+		props.put("mail.transport.protocol", "smtp");
 
-        props.put("mail.smtp.socketFactory.class",
-                "javax.net.ssl.SSLSocketFactory");
-        Session mailSession = null;
+		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		Session mailSession = null;
 
-        mailSession = Session.getInstance(props,  
-                new javax.mail.Authenticator() {  
-            protected PasswordAuthentication getPasswordAuthentication() {  
-                return new PasswordAuthentication("lenaasfour277@gmail.com", ";as41996*/;");  
-            }  
-        });  
+		mailSession = Session.getInstance(props, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication("lenaasfour277@gmail.com", ";as41996*/;");
+			}
+		});
 
+		try {
+			
 
-        try {
-        	System.out.println("bad");
+			Transport transport = mailSession.getTransport();
 
-            Transport transport = mailSession.getTransport();
-        	System.out.println("bad");
+			MimeMessage message = new MimeMessage(mailSession);
+			message.setSubject("Sample Subject");
+			message.setFrom(new InternetAddress("lenaasfour277@gmail.com"));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress("asfour.deena@gmail.com"));
 
+			String body = "Sample text";
 
-            MimeMessage message = new MimeMessage(mailSession);
-        	System.out.println("bad");
+			message.setContent(body, "text/html");
 
-            message.setSubject("Sample Subject");
-        	System.out.println("bad");
+			transport.connect("smtp.gmail.com", "lenaasfour277@gmail.com", ";as41996*/;");
 
-            message.setFrom(new InternetAddress("lenaasfour277@gmail.com"));
-        	System.out.println("bad");
+			transport.sendMessage(message, message.getRecipients(Message.RecipientType.TO));
+			transport.close();
+		} catch (Exception exception) {
 
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress("asfour.deena@gmail.com"));
-
-            String body = "Sample text";
-            
-            message.setContent(body,"text/html");
-
-         transport.connect("smtp.gmail.com","lenaasfour277@gmail.com",";as41996*/;");
-        	System.out.println("bad");
-
-
-     transport.sendMessage(message,message.getRecipients(Message.RecipientType.TO));
-            transport.close();
-        } catch (Exception exception) {
-       	System.out.println(exception.getMessage());
-
-        }
-        return "good";
-    }
-} 
+		}
+		return "good";
+	}
+}
